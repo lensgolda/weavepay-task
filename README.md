@@ -11,17 +11,10 @@ you.
 [Single Page Application (SPA)](https://en.wikipedia.org/wiki/Single-page_application)
 * Languages
   - Front end ([re-frame](https://github.com/day8/re-frame)): [ClojureScript](https://clojurescript.org/) (CLJS)
-  - Back end/middleware ([Compojure](https://github.com/weavejester/compojure)): [Clojure](https://clojure.org/)
+  - Back end/middleware ([Pedestal](http://pedestal.io)): [Clojure](https://clojure.org/)
 * Dependencies
   - UI framework: [re-frame](https://github.com/day8/re-frame)
-  ([docs](https://github.com/day8/re-frame/blob/master/docs/README.md),
-  [FAQs](https://github.com/day8/re-frame/blob/master/docs/FAQs/README.md)) ->
-  [Reagent](https://github.com/reagent-project/reagent) ->
-  [React](https://github.com/facebook/react)
-  - Full stack framework: [Compojure](https://github.com/weavejester/compojure)
-  ([Wiki](https://github.com/weavejester/compojure/wiki), [API docs](http://weavejester.github.com/compojure)) ->
-  [Ring](https://github.com/ring-clojure/ring)
-  ([Wiki](https://github.com/ring-clojure/ring/wiki), [API docs](http://ring-clojure.github.com/ring))
+  - Full stack framework: [Pedestal](http://pedestal.io)
   - UI components: [re-com](https://github.com/day8/re-com)
 * Build tools
   - Project task & dependency management: [Leiningen](https://github.com/technomancy/leiningen)
@@ -31,10 +24,13 @@ you.
 
 #### Directory structure
 
-* [`/`](/../../): project config files
+* [`/`](/../../): project config files.
+  or provide environment variables as JVM_OPTS
 * [`dev/`](dev/): source files compiled only with the [dev](#running-the-app) profile
   - [`cljs/user.cljs`](dev/cljs/user.cljs): symbols for use during development in the
-[ClojureScript REPL](#connecting-to-the-browser-repl-from-a-terminal)
+    [ClojureScript REPL](#connecting-to-the-browser-repl-from-a-terminal)
+  - [`clj/user.clj`](dev/clj/user.cljs): symbols for use during development in the
+    [Clojure REPL](#connecting-to-the-running-backend-repl-from-your-editor)
 * [`resources/public/`](resources/public/): SPA root directory;
 [dev](#running-the-app) / [prod](#production) profile depends on the most recent build
   - [`vendor/`](resources/public/vendor/): UI component CSS, fonts, and images
@@ -51,7 +47,7 @@ you.
     - `js/compiled/`: compiled CLJS (`shadow-cljs`)
       - Not tracked in source control; see [`.gitignore`](.gitignore)
 * [`src/clj/weavepay_task/`](src/clj/weavepay_task/): Backend and middleware source files (Clojure,
-[Compojure](https://github.com/weavejester/compojure))
+[Pedestal](http://pedestal.io))
 * [`src/cljs/weavepay_task/`](src/cljs/weavepay_task/): SPA source files (ClojureScript,
 [re-frame](https://github.com/Day8/re-frame))
   - [`core.cljs`](src/cljs/weavepay_task/core.cljs): contains the SPA entry point, `init`
@@ -69,7 +65,13 @@ dependency management)
 3. Install [Node.js](https://nodejs.org/) (JavaScript runtime environment) which should include
    [NPM](https://docs.npmjs.com/cli/npm) or if your Node.js installation does not include NPM also install it.
 7. Clone this repo and open a terminal in the `weavepay-task` project root directory
-8. (Optional) Download project dependencies:
+8. Place `config.edn` file in the project root directory, with following content 
+    ```clojure
+   {:port 8080
+    :scopus {:api-key YOUR_SCOPUS_API_KEY
+             :url "https://api.elsevier.com/content/search/scopus"}} 
+   ```
+9. (Optional) Download project dependencies:
     ```sh
     lein deps
     ```
@@ -128,6 +130,10 @@ changes to your browser on save. To prevent a few common issues, see
 Opening the app in your browser starts a
 [ClojureScript browser REPL](https://clojurescript.org/reference/repl#using-the-browser-as-an-evaluation-environment),
 to which you may now connect.
+
+#### Connecting to the running backend REPL from your editor
+
+Backend REPL runs on port 50505
 
 #### Connecting to the browser REPL from your editor
 
