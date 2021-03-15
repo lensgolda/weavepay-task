@@ -1,0 +1,10 @@
+{
+	"name": "weavepay-task",
+	"devDependencies": {
+		"shadow-cljs": "2.11.21"
+	},
+	"dependencies": {
+		"react": "17.0.1",
+		"react-dom": "17.0.1"
+	}
+}
