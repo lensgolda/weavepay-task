@@ -66,11 +66,14 @@ dependency management)
    [NPM](https://docs.npmjs.com/cli/npm) or if your Node.js installation does not include NPM also install it.
 7. Clone this repo and open a terminal in the `weavepay-task` project root directory
 8. Place `config.edn` file in the project root directory, with following content 
-    ```clojure
-   {:port 8080
-    :scopus {:api-key YOUR_SCOPUS_API_KEY
-             :url "https://api.elsevier.com/content/search/scopus"}} 
+    
+   ```clojure
+       {:port 8080
+        :scopus {:api-key YOUR_API_KEY_HERE
+                 :url "https://api.elsevier.com/content/search/scopus"}
+        :db {:dbtype "sqlite" :dbname "weavepay"}} 
    ```
+   
 9. (Optional) Download project dependencies:
     ```sh
     lein deps
