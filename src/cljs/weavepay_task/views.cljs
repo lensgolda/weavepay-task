@@ -7,7 +7,7 @@
    [weavepay-task.events :as events]))
 
 
-;; Words search form
+;; Search form
 
 (defn find-input-alert
   [body]
@@ -69,19 +69,19 @@
 ;; Table view
 
 (defn table-header []
-  [:tr
-   [:th "#"]
-   [:th "id"]
-   [:th "word"]
-   [:th "pubname"]
-   [:th "creator"]
-   [:th "doi"]
-   [:th "coverdate"]])
+  [:thead {:align "left"}
+   [:tr
+    [:th "id"]
+    [:th "word"]
+    [:th "pubname"]
+    [:th "creator"]
+    [:th "doi"]
+    [:th "coverdate"]]])
 
 (defn table-row
   [a]
   (let [{:articles/keys [id word pubname creator doi coverdate]} a]
-    [:tr.row
+    [:tr
      [:td id]
      [:td word]
      [:td pubname]
@@ -89,24 +89,26 @@
      [:td doi]
      [:td coverdate]]))
 
+(defn articles-table
+  []
+  (let [articles (re-frame/subscribe [::subs/articles])]
+    (fn []
+      [:table.table.table-hover.table-bordered {:width "100%" :cellPadding 7}
+       [table-header]
+       [:tbody {:align "left"}
+        (doall
+          (for [a @articles]
+            ^{:key a} [table-row a]))]])))
+
 (defn articles-list
   []
-  (let [_        (re-frame/dispatch [::events/articles-list 0 15])
-        articles (re-frame/subscribe [::subs/articles])]
+  (let [_ (re-frame/dispatch [::events/articles-list 0 15])]
     (fn []
       [re-com/h-box
        :src (at)
        :gap "20px"
        :padding "50px 25px 0 25px"
-       :children [[:table {:width       "100%"
-                           :style       {:border-collapse :collapse}
-                           :border      2
-                           :cellPadding 7}
-                   [:thead {:align "left"} [table-header]]
-                   [:tbody {:align "left"}
-                    (doall
-                      (for [a @articles]
-                        ^{:key a} [table-row a]))]]]])))
+       :children [[articles-table]]])))
 
 (defn main-panel []
   (let [type (re-frame/subscribe [::subs/view-type])]
