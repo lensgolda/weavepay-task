@@ -12,11 +12,6 @@
    db/default-db))
 
 (re-frame/reg-event-db
-  ::set-input-value
- (fn [db [_ value]]
-   (assoc db :input-value value)))
-
-(re-frame/reg-event-db
   ::close-alert
   (fn [db [_ alert-id]]
     (assoc-in db [:alerts alert-id] nil)))
@@ -26,7 +21,7 @@
   (fn [db [_ resp]]
     (js/console.log (clj->js resp))
     (-> db
-      (assoc-in [:alerts :find-input-error] nil)
+      (assoc-in [:alerts :find-error] nil)
       (assoc :view-type :articles))))
 
 (re-frame/reg-event-db
@@ -34,15 +29,15 @@
   (fn [db [_ resp]]
     (js/console.log (clj->js resp))
     (-> db
-      (assoc-in [:alerts :find-input-error] nil)
+      (assoc-in [:alerts :find-error] nil)
       (assoc :view-type :articles
              :articles (:articles resp)))))
 
 (re-frame/reg-event-db
   ::bad-response
   (fn [db [_ resp]]
-    (js/console.log (clj->js (-> resp :response :error)))
-    (assoc-in db [:alerts :find-input-error] (-> resp :response :error))))
+    (js/console.log (clj->js resp))
+    (assoc-in db [:alerts :find-error] (-> resp :response :error))))
 
 (re-frame/reg-event-fx
   ::find
@@ -53,8 +48,7 @@
                   :params {:words words}
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [::process-response]
-                  :on-failure [::bad-response]}
-     :db db}))
+                  :on-failure [::bad-response]}}))
 
 (re-frame/reg-event-fx
   ::articles-list

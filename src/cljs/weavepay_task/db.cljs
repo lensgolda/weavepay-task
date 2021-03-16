@@ -2,6 +2,6 @@
 
 (def default-db
   {:input-value nil
-   :view-type :articles
-   :alerts {:find-input-error nil}
-   :articles []})
+   :view-type   :search-form
+   :alerts      {:find-error nil}
+   :articles    []})

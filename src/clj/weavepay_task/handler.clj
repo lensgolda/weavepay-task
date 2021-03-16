@@ -59,7 +59,7 @@
         raw-words (:words query-params)
         words     (set (re-seq regexp raw-words))]
     (if-not (seq words)
-      (bad-request {:error "no words passed" :data raw-words})
+      (bad-request {:error "no words passed"})
       (try
         (let [response-results (get-articles-by-words words)
               articles-values  (get-values-for-multi response-results)]
