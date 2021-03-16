@@ -2,18 +2,11 @@
   (:require
    [re-frame.core :as re-frame]
    [re-com.core :as re-com :refer [at]]
-   [reagent.core :as r]
    [weavepay-task.subs :as subs]
    [weavepay-task.events :as events]))
 
 
-(defn title []
-  (let [name (re-frame/subscribe [::subs/name])
-        _    (re-frame/dispatch [::events/find])]
-    [re-com/title
-     :src (at)
-     :label (str "Hello from " @name)
-     :level :level1]))
+;; Words search form
 
 (defn search-input
   []
@@ -60,6 +53,46 @@
                               [find-input-alert alert]]))]
               [re-com/v-box :height "100%" :children [[search-button]]]]])
 
+;; Table view
+
+(defn table-header []
+  [:tr
+   [:th "#"]
+   [:th "id"]
+   [:th "word"]
+   [:th "pubname"]
+   [:th "creator"]
+   [:th "doi"]
+   [:th "coverdate"]])
+
+(defn table-row
+  [a]
+  (let [{:articles/keys [id word pubname creator doi coverdate]} a]
+    [:tr.row
+     [:td id]
+     [:td word]
+     [:td pubname]
+     [:td creator]
+     [:td doi]
+     [:td coverdate]]))
+
+(defn articles-list
+  []
+  (let [_ (re-frame/dispatch [::events/articles-list 0 15])
+        articles (re-frame/subscribe [::subs/articles])]
+    [re-com/h-box
+     :gap "20px"
+     :padding "50px 25px 0 25px"
+     :children [[:table {:width       "100%"
+                         :style       {:border-collapse :collapse}
+                         :border      2
+                         :cellPadding 7}
+                 [:thead {:align "left"} [table-header]]
+                 [:tbody {:align "left"}
+                  (doall
+                    (for [a @articles]
+                      ^{:key a} [table-row a]))]]]]))
+
 (defn main-panel []
   (let [type (re-frame/subscribe [::subs/view-type])]
     [re-com/v-box
@@ -67,6 +100,7 @@
      :height "100%"
      :children (case @type
                  :search-form [[search-form]]
-                 [[search-form]])]))
+                 :articles [[articles-list]]
+                 [[articles-list]])]))
 
 

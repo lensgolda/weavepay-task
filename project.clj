@@ -19,7 +19,10 @@
                   :exclusions [ch.qos.logback/logback-classic]]
                  [io.pedestal/pedestal.route "0.5.8"]
                  [io.pedestal/pedestal.jetty "0.5.8"]
-                 [org.martinklepsch/clj-http-lite "0.4.3"]]
+                 [org.martinklepsch/clj-http-lite "0.4.3"]
+                 [org.xerial/sqlite-jdbc "3.34.0"]
+                 [com.github.seancorfield/next.jdbc "1.1.643"]
+                 [com.zaxxer/HikariCP "4.0.3"]]
 
   :plugins [[lein-shadow "0.3.1"]
             [lein-shell "0.5.0"]]

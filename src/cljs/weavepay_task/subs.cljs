@@ -21,3 +21,8 @@
   ::input-value
   (fn [db]
     (:input-value db)))
+
+(re-frame/reg-sub
+  ::articles
+  (fn [db]
+    (:articles db)))

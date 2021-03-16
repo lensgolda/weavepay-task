@@ -1,17 +1,13 @@
 (ns weavepay-task.interceptors
   (:require [io.pedestal.interceptor :refer [interceptor]]
-            [io.pedestal.log :as log]
-            [clojure.string :as str]))
+            [io.pedestal.log :as log]))
 
 (def log-request
   (interceptor
     {:name  ::log-request
      :enter (fn [context]
-              (let [{:keys [uri request-method params]} (:request context)]
-                (log/info
-                  :method (str/capitalize (name request-method))
-                  :uri uri
-                  :params params)
+              (let [request (:request context)]
+                (log/info :request request)
                 context))}))
 
 (defn using

@@ -25,7 +25,18 @@
   ::process-response
   (fn [db [_ resp]]
     (js/console.log (clj->js resp))
-    (assoc-in db [:alerts :find-input-error] nil)))
+    (-> db
+      (assoc-in [:alerts :find-input-error] nil)
+      (assoc :view-type :articles))))
+
+(re-frame/reg-event-db
+  ::process-articles-response
+  (fn [db [_ resp]]
+    (js/console.log (clj->js resp))
+    (-> db
+      (assoc-in [:alerts :find-input-error] nil)
+      (assoc :view-type :articles
+             :articles (:articles resp)))))
 
 (re-frame/reg-event-db
   ::bad-response
@@ -44,3 +55,14 @@
                   :on-success [::process-response]
                   :on-failure [::bad-response]}
      :db db}))
+
+(re-frame/reg-event-fx
+  ::articles-list
+  (fn [_ [_ page amount]]
+    {:http-xhrio {:method :get
+                  :uri "http://localhost:8080/articles"
+                  :format (ajax/json-request-format)
+                  :params {:page page :amount amount}
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success [::process-articles-response]
+                  :on-failure [::bad-response]}}))
