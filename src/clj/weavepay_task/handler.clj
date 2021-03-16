@@ -78,10 +78,10 @@
   [{:keys [query-params] {<db> :db} :component}]
   (try
     (let [{:keys [page amount]} query-params
-          p        (Integer/parseInt page)
-          a        (Integer/parseInt amount)
-          articles (jdbc/execute! <db>
-                     ["SELECT * FROM articles LIMIT ? OFFSET ?" (* page amount) amount])]
+          page-int   (Integer/parseInt page)
+          amount-int (Integer/parseInt amount)
+          articles   (jdbc/execute! <db>
+                       ["SELECT * FROM articles LIMIT ? OFFSET ?" amount-int (* page-int amount-int)])]
       (response {:articles articles}))
     (catch Exception e
       (let [ex-map (Throwable->map e)]
