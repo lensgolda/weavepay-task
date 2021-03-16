@@ -16,6 +16,7 @@ you.
   - UI framework: [re-frame](https://github.com/day8/re-frame)
   - Full stack framework: [Pedestal](http://pedestal.io)
   - UI components: [re-com](https://github.com/day8/re-com)
+  - DB: [SQLite](https://www.sqlite.org), Library: [next.jdbc](https://github.com/seancorfield/next-jdbc)
 * Build tools
   - Project task & dependency management: [Leiningen](https://github.com/technomancy/leiningen)
   - CLJS compilation, REPL, & hot reload: [`shadow-cljs`](https://github.com/thheller/shadow-cljs)
