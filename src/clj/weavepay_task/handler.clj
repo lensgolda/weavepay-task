@@ -12,7 +12,8 @@
             [config.core :refer [env]]
             [clojure.core.async :refer [go-loop chan <!! <! >! >!! put! take!]]
             [next.jdbc.sql :as sql]
-            [next.jdbc :as jdbc]))
+            [next.jdbc :as jdbc]
+            [next.jdbc.plan :as plan]))
 
 
 (def ^:private fields [:prism:publicationName :prism:coverDate :dc:creator :prism:doi])
@@ -81,8 +82,11 @@
           page-int   (Integer/parseInt page)
           amount-int (Integer/parseInt amount)
           articles   (jdbc/execute! <db>
-                       ["SELECT * FROM articles LIMIT ? OFFSET ?" amount-int (* page-int amount-int)])]
-      (response {:articles articles}))
+                       ["SELECT * FROM articles LIMIT ? OFFSET ?" amount-int (* page-int amount-int)])
+          pcount     (plan/select-one! <db>
+                       :pcount ["SELECT count(*) as pcount FROM articles"])]
+      (response {:articles articles
+                 :count    pcount}))
     (catch Exception e
       (let [ex-map (Throwable->map e)]
         (log/info :articles-handler-exceptio ex-map)

@@ -12,6 +12,11 @@
    db/default-db))
 
 (re-frame/reg-event-db
+  ::switch-view
+  (fn [db [_ type]]
+    (assoc db :view-type type)))
+
+(re-frame/reg-event-db
   ::close-alert
   (fn [db [_ alert-id]]
     (assoc-in db [:alerts alert-id] nil)))
@@ -26,12 +31,13 @@
 
 (re-frame/reg-event-db
   ::process-articles-response
-  (fn [db [_ resp]]
+  (fn [db [_ {:keys [articles count] :as resp}]]
     (js/console.log (clj->js resp))
     (-> db
       (assoc-in [:alerts :find-error] nil)
       (assoc :view-type :articles
-             :articles (:articles resp)))))
+             :articles  articles
+             :count     count))))
 
 (re-frame/reg-event-db
   ::bad-response
@@ -48,15 +54,17 @@
                   :params {:words words}
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [::process-response]
-                  :on-failure [::bad-response]}}))
+                  :on-failure [::bad-response]}
+     :db db}))
 
 (re-frame/reg-event-fx
   ::articles-list
-  (fn [_ [_ page amount]]
+  (fn [{db :db} [_ page amount]]
     {:http-xhrio {:method :get
                   :uri "http://localhost:8080/articles"
                   :format (ajax/json-request-format)
                   :params {:page page :amount amount}
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success [::process-articles-response]
-                  :on-failure [::bad-response]}}))
+                  :on-failure [::bad-response]}
+     :db db}))

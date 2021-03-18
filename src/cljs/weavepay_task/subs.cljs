@@ -16,3 +16,8 @@
   ::articles
   (fn [db]
     (:articles db)))
+
+(re-frame/reg-sub
+  ::articles-count
+  (fn [db]
+    (:count db)))
