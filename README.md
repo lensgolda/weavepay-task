@@ -2,7 +2,7 @@
 
 A weavepay-task application.
 
-![](https://ibb.co/khX552n?raw=true)
+![Screenshot](https://ibb.co/khX552n?raw=true)
 
 ![](https://imgur.com/N6HIocw)
 
