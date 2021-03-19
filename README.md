@@ -79,7 +79,7 @@ dependency management)
 8. Place `config.edn` file in the project root directory, with following content 
     
    ```clojure
-       {:port 8080
+       {:port 3000
         :scopus {:api-key YOUR_API_KEY_HERE
                  :url "https://api.elsevier.com/content/search/scopus"}
         :db {:dbtype "sqlite" :dbname "weavepay"}} 
