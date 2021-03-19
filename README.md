@@ -4,8 +4,6 @@ A weavepay-task application.
 
 ![Screenshot](https://i.ibb.co/y8qddFT/weavepay-task.png?raw=true)
 
-![Screenshot](https://imgur.com/N6HIocw?raw=true)
-
 ## Getting Started
 
 Easy run:
