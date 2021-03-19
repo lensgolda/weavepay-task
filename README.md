@@ -4,9 +4,7 @@ A weavepay-task application.
 
 ![Screenshot](https://i.ibb.co/y8qddFT/weavepay-task.png?raw=true)
 
-<a href="https://ibb.co/khX552n"><img src="https://i.ibb.co/y8qddFT/weavepay-task.png" alt="weavepay-task" border="0"></a><br /><a target='_blank' href='https://imgbb.com/'>on my photos</a><br />
-
-![](https://imgur.com/N6HIocw)
+![Screenshot](https://imgur.com/N6HIocw?raw=true)
 
 ## Getting Started
 
