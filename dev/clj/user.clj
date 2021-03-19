@@ -30,13 +30,14 @@
 
     (defonce server (atom nil))
 
-    (def service-map {::http/port            8080
+    (def service-map {::http/port            3000
                       ::http/routes          handler
                       ::http/type            :jetty
                       ::http/join?           false
                       ::http/request-logger  i/log-request
-                      ::http/allowed-origins ["http://localhost:8280"]
-                      ::http/resource-path   "/public"})
+                      ::http/allowed-origins (constantly true)
+                      ::http/resource-path   "/public"
+                      ::http/secure-headers {:content-security-policy-settings nil}})
 
     (defn start-server []
       (reset! server (-> service-map http/create-server http/start)))

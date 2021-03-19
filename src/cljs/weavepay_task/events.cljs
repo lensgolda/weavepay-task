@@ -49,7 +49,7 @@
   ::find
   (fn [{db :db} [_ words]]
     {:http-xhrio {:method :get
-                  :uri "http://localhost:8080/find"
+                  :uri "http://localhost:3000/find"
                   :format (ajax/json-request-format)
                   :params {:words words}
                   :response-format (ajax/json-response-format {:keywords? true})
@@ -61,7 +61,7 @@
   ::articles-list
   (fn [{db :db} [_ page amount]]
     {:http-xhrio {:method :get
-                  :uri "http://localhost:8080/articles"
+                  :uri "http://localhost:3000/articles"
                   :format (ajax/json-request-format)
                   :params {:page page :amount amount}
                   :response-format (ajax/json-response-format {:keywords? true})

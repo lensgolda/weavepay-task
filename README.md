@@ -1,9 +1,19 @@
 # weavepay-task
 
-A [re-frame](https://github.com/day8/re-frame) application designed to ... well, that part is up to
-you.
+A weavepay-task application.
+
+![Screenshot](https://imgur.com/N6HIocw)
 
 ## Getting Started
+
+Easy run:
+
+```bash
+lein uberjar
+java -jar target/weavepay-task.jar
+```
+
+Open in browser [http://localhost:3000](http://localhost:3000)
 
 ### Project Overview
 
@@ -222,7 +232,7 @@ standalone `weavepay-task.jar`.
 setting the port the Ring server will use by setting the environment variable, `port`.
 
 ```sh
-port=2000 java -jar target/weavepay-task.jar
+port=3000 java -jar target/weavepay-task.jar
 ```
 
 If `port` is not set, the server will run on port 3000 by default.

@@ -1,11 +1,12 @@
 (ns weavepay-task.handler
-  (:require [ring.util.response :refer [resource-response response status bad-request]]
+  (:require [ring.util.response :as r]
             [ring.middleware.reload :refer [wrap-reload]]
             [shadow.http.push-state :as push-state]
             [io.pedestal.http :as http]
             [io.pedestal.log :as log]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.service-tools.dev :as devtools]
+            [io.pedestal.http.ring-middlewares :refer [resource]]
             [weavepay-task.interceptors :as i]
             [weavepay-task.db :as db]
             [clj-http.lite.client :as client]
@@ -13,7 +14,8 @@
             [clojure.core.async :refer [go-loop chan <!! <! >! >!! put! take!]]
             [next.jdbc.sql :as sql]
             [next.jdbc :as jdbc]
-            [next.jdbc.plan :as plan]))
+            [next.jdbc.plan :as plan]
+            [clojure.data.json :as json]))
 
 
 (def ^:private fields [:prism:publicationName :prism:coverDate :dc:creator :prism:doi])
@@ -30,7 +32,7 @@
     (when (= 200 (:status result))
       (some-> result
         :body
-        (clojure.data.json/read-json true)
+        (json/read-json true)
         :search-results
         :entry
         (as-> entries
@@ -60,20 +62,22 @@
         raw-words (:words query-params)
         words     (set (re-seq regexp raw-words))]
     (if-not (seq words)
-      (bad-request {:error "no words passed"})
+      (r/bad-request {:error "no words passed"})
       (try
         (let [response-results (get-articles-by-words words)
               articles-values  (get-values-for-multi response-results)]
           (sql/insert-multi! <db> :articles db/articles-cols articles-values)
-          (response (into {} response-results)))
+          (r/response (into {} response-results)))
         (catch Exception e
           (let [ex-map (Throwable->map e)]
             (log/info :find-handler-exceptio ex-map)
-            (status (response {:error (:cause ex-map)}) 500)))))))
+            (-> (r/response {:error (:cause ex-map)})
+                (r/status 500))))))))
 
 (defn root-handler
   [_]
-  (resource-response "index.html" {:root "public"}))
+  (-> (r/resource-response "index.html" {:root "public"})
+      (r/header "Content-Type" "text/html;charset=UTF-8")))
 
 (defn articles-handler
   [{:keys [query-params] {<db> :db} :component}]
@@ -85,12 +89,13 @@
                        ["SELECT * FROM articles LIMIT ? OFFSET ?" amount-int (* page-int amount-int)])
           pcount     (plan/select-one! <db>
                        :pcount ["SELECT count(*) as pcount FROM articles"])]
-      (response {:articles articles
-                 :count    pcount}))
+      (r/response {:articles articles
+                   :count    pcount}))
     (catch Exception e
       (let [ex-map (Throwable->map e)]
         (log/info :articles-handler-exceptio ex-map)
-        (status (response {:error (:cause ex-map)}) 500)))))
+        (-> (r/response {:error (:cause ex-map)})
+            (r/status 500))))))
 
 (def common-interceptors
   [(i/using :db (db/get-datasource)) (body-params/body-params) http/json-body http/not-found])

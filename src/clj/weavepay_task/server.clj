@@ -3,7 +3,8 @@
             [config.core :refer [env]]
             [io.pedestal.http :as http]
             [weavepay-task.interceptors :as i]
-            [next.jdbc :as jdbc]))
+            [next.jdbc :as jdbc])
+  (:gen-class))
 
 (defn- initialize-db
   [db-spec]
@@ -19,7 +20,7 @@
                           )"])))
 
 (defn -main [& _args]
-  (let [port (or (env :port) 8080)
+  (let [port    (or (env :port) 3000)
         db-spec (merge {:dbtype "sqlite" :dbname "weavepay"} (:db env))]
     (initialize-db db-spec)
     (-> {::http/port            port
@@ -27,7 +28,8 @@
          ::http/type            :jetty
          ::http/join?           false
          ::http/request-logger  i/log-request
-         ::http/allowed-origins ["http://localhost:8280"]
-         ::http/resource-path   "/public"}
+         ::http/allowed-origins (constantly true)
+         ::http/resource-path   "/public"
+         ::http/secure-headers {:content-security-policy-settings nil}}
       http/create-server
       http/start)))
